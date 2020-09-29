@@ -150,7 +150,7 @@ module.exports = {
           const path = file.path ? `${file.path}/` : ''
           const key = `${path}${file.hash}${file.ext}`
           const fileStream = new fs.ReadStream()
-          fileStream.push(file.buffer)
+          fileStream.push(file.buffer!)
           client.putObject(
             {
               Bucket: defaultBucket,
