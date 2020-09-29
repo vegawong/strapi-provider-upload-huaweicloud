@@ -149,13 +149,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
           const path = file.path ? `${file.path}/` : ''
           const key = `${path}${file.hash}${file.ext}`
-          const fileStream = new fs.ReadStream()
-          fileStream.push(file.buffer!)
           client.putObject(
             {
               Bucket: defaultBucket,
               Key: key,
-              Body: fileStream
+              Body: file.buffer!,
+              ContentType: file.mime
             },
             (err: unknown, result: unknown) => {
               if (err) {
