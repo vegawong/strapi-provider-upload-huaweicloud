@@ -1,4 +1,4 @@
-import ObsClient from 'esdk-obs-nodejs'
+import * as ObsClient from 'esdk-obs-nodejs'
 
 enum ObsServerEndpoint {
   /** 

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var esdk_obs_nodejs_1 = require("esdk-obs-nodejs");
+var ObsClient = require("esdk-obs-nodejs");
 var ObsServerEndpoint;
 (function (ObsServerEndpoint) {
     /**
@@ -54,7 +54,7 @@ var getObjectUrl = function (bucket, endpoint, key, bucketDomain) {
 module.exports = {
     init: function (providerOptions) {
         var accessKeyId = providerOptions.accessKeyId, secretAccessKey = providerOptions.secretAccessKey, serverEndpoint = providerOptions.serverEndpoint, defaultBucket = providerOptions.bucket, bucketDomain = providerOptions.bucketDomain;
-        var client = new esdk_obs_nodejs_1.default({
+        var client = new ObsClient({
             access_key_id: accessKeyId,
             secret_access_key: secretAccessKey,
             server: serverEndpoint
