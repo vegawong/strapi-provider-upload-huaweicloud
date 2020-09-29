@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ObsClient = require("esdk-obs-nodejs");
+var fs = require("fs");
+/**
+ * 华为obs可用节点
+ * https://developer.huaweicloud.com/endpoint?OBS
+ */
 var ObsServerEndpoint;
 (function (ObsServerEndpoint) {
     /**
@@ -44,9 +49,21 @@ var ObsServerEndpoint;
      */
     ObsServerEndpoint["APSouthEast3"] = "obs.ap-southeast-3.myhuaweicloud.com";
 })(ObsServerEndpoint || (ObsServerEndpoint = {}));
+/**
+ * 华为obs资源的访问域名
+ * @param bucket
+ * @param endpoint
+ */
 var getDomain = function (bucket, endpoint) {
     return "//" + bucket + "." + endpoint;
 };
+/**
+ * 华为obs资源的访问地址
+ * @param bucket
+ * @param endpoint
+ * @param key
+ * @param bucketDomain
+ */
 var getObjectUrl = function (bucket, endpoint, key, bucketDomain) {
     var path = key.replace(/^\//, '');
     return (bucketDomain || getDomain(bucket, endpoint)) + "/" + path;
@@ -64,25 +81,41 @@ module.exports = {
                 return new Promise(function (resolve, reject) {
                     var path = file.path ? file.path + "/" : '';
                     var key = "" + path + file.hash + file.ext;
+                    var fileStream = new fs.ReadStream();
+                    fileStream.push(file.buffer);
                     client.putObject({
                         Bucket: defaultBucket,
                         Key: key,
-                        Body: Buffer.from(file.buffer, 'binary'),
+                        Body: fileStream
                     }, function (err, result) {
                         if (err) {
                             console.error('Error-->' + err);
                             reject(err);
                         }
                         else {
-                            file.url = getObjectUrl(defaultBucket, serverEndpoint, key);
+                            file.url = getObjectUrl(defaultBucket, serverEndpoint, key, bucketDomain);
                             resolve();
                         }
                     });
                 });
-                // upload the file in the provider
             },
             delete: function (file) {
-                // delete the file in the provider
+                return new Promise(function (resolve, reject) {
+                    var path = file.path ? file.path + "/" : '';
+                    var key = "" + path + file.hash + file.ext;
+                    client.deleteObject({
+                        Bucket: defaultBucket,
+                        Key: key
+                    }, function (err, result) {
+                        if (err) {
+                            console.log('Error-->' + err);
+                        }
+                        else {
+                            // console.log('Status-->' + result.CommonMsg.Status)
+                            resolve();
+                        }
+                    });
+                });
             }
         };
     }

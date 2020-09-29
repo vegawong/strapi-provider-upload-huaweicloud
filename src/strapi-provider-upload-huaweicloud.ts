@@ -1,8 +1,13 @@
 import * as ObsClient from 'esdk-obs-nodejs'
+import * as fs from 'fs'
 
+/**
+ * 华为obs可用节点
+ * https://developer.huaweicloud.com/endpoint?OBS
+ */
 enum ObsServerEndpoint {
-  /** 
-   * 非洲-约翰内斯堡 
+  /**
+   * 非洲-约翰内斯堡
    */
   AFSouth1 = 'obs.af-south-1.myhuaweicloud.com',
   /**
@@ -47,19 +52,34 @@ enum ObsServerEndpoint {
    * 亚太-新加坡
    */
   APSouthEast3 = 'obs.ap-southeast-3.myhuaweicloud.com'
-
-
-
 }
 
 export interface ProviderOptions {
+  /**
+   * 华为obs的access_key_id
+   */
   accessKeyId: string
+  /**
+   * 华为obs的secret_access_key
+   */
   secretAccessKey: string
+  /**
+   * 华为obs的区域终端节点
+   */
   serverEndpoint: ObsServerEndpoint | string
+  /**
+   * 华为obs的bucket
+   */
   bucket: string
+  /**
+   * 额外给obs绑定的域名
+   */
   bucketDomain?: string
 }
 
+/**
+ * strapi的upload参数中的File类型
+ */
 export interface IFile {
   // built
   id: string
@@ -81,21 +101,44 @@ export interface IFile {
 
   // advance
   path?: string
-  buffer?: string
+  buffer?: Buffer
 }
 
+/**
+ * 华为obs资源的访问域名
+ * @param bucket
+ * @param endpoint
+ */
 const getDomain = (bucket: string, endpoint: ObsServerEndpoint | string): string => {
   return `//${bucket}.${endpoint}`
 }
 
-const getObjectUrl = (bucket: string, endpoint: ObsServerEndpoint | string, key: string, bucketDomain?: string) => {
+/**
+ * 华为obs资源的访问地址
+ * @param bucket
+ * @param endpoint
+ * @param key
+ * @param bucketDomain
+ */
+const getObjectUrl = (
+  bucket: string,
+  endpoint: ObsServerEndpoint | string,
+  key: string,
+  bucketDomain?: string
+) => {
   const path = key.replace(/^\//, '')
   return `${bucketDomain || getDomain(bucket, endpoint)}/${path}`
 }
 
 module.exports = {
   init(providerOptions: ProviderOptions) {
-    const {accessKeyId, secretAccessKey, serverEndpoint, bucket: defaultBucket, bucketDomain} = providerOptions
+    const {
+      accessKeyId,
+      secretAccessKey,
+      serverEndpoint,
+      bucket: defaultBucket,
+      bucketDomain
+    } = providerOptions
     const client = new ObsClient({
       access_key_id: accessKeyId,
       secret_access_key: secretAccessKey,
@@ -106,27 +149,45 @@ module.exports = {
         return new Promise((resolve, reject) => {
           const path = file.path ? `${file.path}/` : ''
           const key = `${path}${file.hash}${file.ext}`
+          const fileStream = new fs.ReadStream()
+          fileStream.push(file.buffer)
           client.putObject(
             {
               Bucket: defaultBucket,
               Key: key,
-              Body: Buffer.from(file.buffer!, 'binary'),
+              Body: fileStream
             },
             (err: unknown, result: unknown) => {
               if (err) {
                 console.error('Error-->' + err)
                 reject(err)
               } else {
-                file.url = getObjectUrl(defaultBucket, serverEndpoint, key)
+                file.url = getObjectUrl(defaultBucket, serverEndpoint, key, bucketDomain)
                 resolve()
               }
             }
           )
         })
-        // upload the file in the provider
       },
-      delete(file: File) {
-        // delete the file in the provider
+      delete(file: IFile) {
+        return new Promise((resolve, reject) => {
+          const path = file.path ? `${file.path}/` : ''
+          const key = `${path}${file.hash}${file.ext}`
+          client.deleteObject(
+            {
+              Bucket: defaultBucket,
+              Key: key
+            },
+            (err: unknown, result: unknown) => {
+              if (err) {
+                console.log('Error-->' + err)
+              } else {
+                // console.log('Status-->' + result.CommonMsg.Status)
+                resolve()
+              }
+            }
+          )
+        })
       }
     }
   }

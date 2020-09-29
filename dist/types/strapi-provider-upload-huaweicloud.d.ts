@@ -1,3 +1,8 @@
+/// <reference types="node" />
+/**
+ * 华为obs可用节点
+ * https://developer.huaweicloud.com/endpoint?OBS
+ */
 declare enum ObsServerEndpoint {
     /**
      * 非洲-约翰内斯堡
@@ -41,12 +46,30 @@ declare enum ObsServerEndpoint {
     APSouthEast3 = "obs.ap-southeast-3.myhuaweicloud.com"
 }
 export interface ProviderOptions {
+    /**
+     * 华为obs的access_key_id
+     */
     accessKeyId: string;
+    /**
+     * 华为obs的secret_access_key
+     */
     secretAccessKey: string;
+    /**
+     * 华为obs的区域终端节点
+     */
     serverEndpoint: ObsServerEndpoint | string;
+    /**
+     * 华为obs的bucket
+     */
     bucket: string;
+    /**
+     * 额外给obs绑定的域名
+     */
     bucketDomain?: string;
 }
+/**
+ * strapi的upload参数中的File类型
+ */
 export interface IFile {
     id: string;
     name: string;
@@ -69,6 +92,6 @@ export interface IFile {
     };
     related: any[];
     path?: string;
-    buffer?: string;
+    buffer?: Buffer;
 }
 export {};
