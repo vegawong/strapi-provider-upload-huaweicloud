@@ -1,4 +1,3 @@
-import { File } from 'formidable';
 declare enum ObsServerEndpoint {
     /**
      * 非洲-约翰内斯堡
