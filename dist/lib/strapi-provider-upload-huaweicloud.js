@@ -51,7 +51,7 @@ var getObjectUrl = function (bucket, endpoint, key, bucketDomain) {
     var path = key.replace(/^\//, '');
     return (bucketDomain || getDomain(bucket, endpoint)) + "/" + path;
 };
-exports.default = {
+module.exports = {
     init: function (providerOptions) {
         var accessKeyId = providerOptions.accessKeyId, secretAccessKey = providerOptions.secretAccessKey, serverEndpoint = providerOptions.serverEndpoint, defaultBucket = providerOptions.bucket, bucketDomain = providerOptions.bucketDomain;
         var client = new esdk_obs_nodejs_1.default({

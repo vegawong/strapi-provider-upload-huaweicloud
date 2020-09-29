@@ -71,10 +71,4 @@ export interface IFile {
     path?: string;
     buffer?: string;
 }
-declare const _default: {
-    init(providerOptions: ProviderOptions): {
-        upload(file: IFile): Promise<unknown>;
-        delete(file: File): void;
-    };
-};
-export default _default;
+export {};

@@ -93,7 +93,7 @@ const getObjectUrl = (bucket: string, endpoint: ObsServerEndpoint | string, key:
   return `${bucketDomain || getDomain(bucket, endpoint)}/${path}`
 }
 
-export default {
+module.exports = {
   init(providerOptions: ProviderOptions) {
     const {accessKeyId, secretAccessKey, serverEndpoint, bucket: defaultBucket, bucketDomain} = providerOptions
     const client = new ObsClient({
