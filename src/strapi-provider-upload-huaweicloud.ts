@@ -1,6 +1,5 @@
 import ObsClient from 'esdk-obs-nodejs'
-import { File } from 'formidable'
-import * as fs from 'fs'
+
 enum ObsServerEndpoint {
   /** 
    * 非洲-约翰内斯堡 
