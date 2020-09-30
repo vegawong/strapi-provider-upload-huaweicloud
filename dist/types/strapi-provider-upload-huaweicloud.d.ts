@@ -65,6 +65,10 @@ export interface ProviderOptions {
      * 额外给obs绑定的域名
      */
     bucketDomain?: string;
+    /**
+     * 文件夹目录
+     */
+    folder: string;
 }
 /**
  * strapi的upload参数中的File类型

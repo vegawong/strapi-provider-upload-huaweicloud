@@ -70,7 +70,7 @@ var getObjectUrl = function (bucket, endpoint, key, bucketDomain) {
 };
 module.exports = {
     init: function (providerOptions) {
-        var accessKeyId = providerOptions.accessKeyId, secretAccessKey = providerOptions.secretAccessKey, serverEndpoint = providerOptions.serverEndpoint, defaultBucket = providerOptions.bucket, bucketDomain = providerOptions.bucketDomain;
+        var accessKeyId = providerOptions.accessKeyId, secretAccessKey = providerOptions.secretAccessKey, serverEndpoint = providerOptions.serverEndpoint, defaultBucket = providerOptions.bucket, bucketDomain = providerOptions.bucketDomain, folder = providerOptions.folder;
         var client = new ObsClient({
             access_key_id: accessKeyId,
             secret_access_key: secretAccessKey,
@@ -79,7 +79,8 @@ module.exports = {
         return {
             upload: function (file) {
                 return new Promise(function (resolve, reject) {
-                    var path = file.path ? file.path + "/" : '';
+                    // const path = file.path ? `${file.path}/` : ''
+                    var path = folder ? folder + "/" : '';
                     var key = "" + path + file.hash + file.ext;
                     var readStream = new stream.PassThrough();
                     readStream.end(Buffer.from(file.buffer, 'binary'));
