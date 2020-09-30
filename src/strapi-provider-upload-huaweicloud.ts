@@ -75,6 +75,11 @@ export interface ProviderOptions {
    * 额外给obs绑定的域名
    */
   bucketDomain?: string
+
+  /**
+   * 文件夹目录
+   */
+  folder: string
 }
 
 /**
@@ -137,7 +142,8 @@ module.exports = {
       secretAccessKey,
       serverEndpoint,
       bucket: defaultBucket,
-      bucketDomain
+      bucketDomain,
+      folder
     } = providerOptions
     const client = new ObsClient({
       access_key_id: accessKeyId,
@@ -147,7 +153,8 @@ module.exports = {
     return {
       upload(file: IFile) {
         return new Promise((resolve, reject) => {
-          const path = file.path ? `${file.path}/` : ''
+          // const path = file.path ? `${file.path}/` : ''
+          const path = folder ? `${folder}/` : ''
           const key = `${path}${file.hash}${file.ext}`
           const readStream = new stream.PassThrough()
           readStream.end(Buffer.from(file.buffer!, 'binary'))
