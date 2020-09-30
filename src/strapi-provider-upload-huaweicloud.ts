@@ -1,5 +1,5 @@
 import * as ObsClient from 'esdk-obs-nodejs'
-import * as fs from 'fs'
+import * as stream from 'stream'
 
 /**
  * 华为obs可用节点
@@ -149,11 +149,13 @@ module.exports = {
         return new Promise((resolve, reject) => {
           const path = file.path ? `${file.path}/` : ''
           const key = `${path}${file.hash}${file.ext}`
+          const readStream = new stream.PassThrough()
+          readStream.end(Buffer.from(file.buffer, 'binary'))
           client.putObject(
             {
               Bucket: defaultBucket,
               Key: key,
-              Body: file.buffer!,
+              Body: readStream,
               ContentType: file.mime
             },
             (err: unknown, result: unknown) => {
