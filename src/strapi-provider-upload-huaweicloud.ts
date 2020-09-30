@@ -101,7 +101,7 @@ export interface IFile {
 
   // advance
   path?: string
-  buffer?: Buffer
+  buffer?: string
 }
 
 /**
@@ -150,7 +150,7 @@ module.exports = {
           const path = file.path ? `${file.path}/` : ''
           const key = `${path}${file.hash}${file.ext}`
           const readStream = new stream.PassThrough()
-          readStream.end(Buffer.from(file.buffer, 'binary'))
+          readStream.end(Buffer.from(file.buffer!, 'binary'))
           client.putObject(
             {
               Bucket: defaultBucket,

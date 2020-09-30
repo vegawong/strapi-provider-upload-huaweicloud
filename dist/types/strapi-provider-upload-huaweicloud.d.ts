@@ -1,4 +1,3 @@
-/// <reference types="node" />
 /**
  * 华为obs可用节点
  * https://developer.huaweicloud.com/endpoint?OBS
@@ -92,6 +91,6 @@ export interface IFile {
     };
     related: any[];
     path?: string;
-    buffer?: Buffer;
+    buffer?: string;
 }
 export {};

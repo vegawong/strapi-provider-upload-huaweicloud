@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ObsClient = require("esdk-obs-nodejs");
+var stream = require("stream");
 /**
  * 华为obs可用节点
  * https://developer.huaweicloud.com/endpoint?OBS
@@ -80,10 +81,12 @@ module.exports = {
                 return new Promise(function (resolve, reject) {
                     var path = file.path ? file.path + "/" : '';
                     var key = "" + path + file.hash + file.ext;
+                    var readStream = new stream.PassThrough();
+                    readStream.end(Buffer.from(file.buffer, 'binary'));
                     client.putObject({
                         Bucket: defaultBucket,
                         Key: key,
-                        Body: file.buffer,
+                        Body: readStream,
                         ContentType: file.mime
                     }, function (err, result) {
                         if (err) {
