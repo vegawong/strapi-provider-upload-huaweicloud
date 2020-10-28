@@ -1,6 +1,6 @@
 {
   "name": "strapi-provider-upload-huaweicloud",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "keywords": [],
   "main": "dist/lib/strapi-provider-upload-huaweicloud.js",
